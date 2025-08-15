@@ -181,7 +181,7 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(data.contents, 'text/html');
 
-                const section = doc.querySelector('section#exercicios-resolvidos');
+                const section = doc.querySelector('main > article > section');
 
                 if (section) {
                     let style = section.getAttribute('style') || '';
@@ -199,7 +199,7 @@
                     inputContainer.classList.add('move-up');
                 } else {
                     errorMessage.style.display = 'block';
-                    errorMessage.textContent = 'Seção com id "exercicios-resolvidos" não encontrada.';
+                    errorMessage.textContent = 'Seção dentro de main > article > section não encontrada.';
                 }
             } catch (error) {
                 errorMessage.style.display = 'block';
