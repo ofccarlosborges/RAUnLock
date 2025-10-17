@@ -7,6 +7,7 @@
  <link rel="preconnect" href="https://fonts.googleapis.com">  
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">  
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
  <style>  
  :root {  
@@ -493,15 +494,27 @@
  const doc = new jsPDF();  
  const content = this.elements.outputCard;  
    
- doc.html(content, {  
- callback: function (doc) {  
- doc.save('conteudo_desbloqueado.pdf');  
- },  
- x: 10,  
- y: 10,  
- width: 190, // Largura do conteúdo no PDF  
- windowWidth: this.elements.outputCard.scrollWidth // Largura da janela para renderização do HTML  
- });  
+ html2canvas(content).then(canvas => {
+                    const imgData = canvas.toDataURL("image/png");
+                    const imgWidth = 210; 
+                    const pageHeight = 295;  
+                    const imgHeight = canvas.height * imgWidth / canvas.width;
+                    let heightLeft = imgHeight;
+
+                    let position = 0;
+
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        doc.addPage();
+                        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    doc.save("conteudo_desbloqueado.pdf");
+                });  
+
  }  
  }  
    
